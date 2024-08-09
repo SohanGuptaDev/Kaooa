@@ -1,408 +1,217 @@
 import turtle
 import math as m
 
-dictionary={
-    "1":{
-        "nn":[4,5],
-        "snn":[2,8]
-    },
-    "2":{
-        "nn":[7,4,9,6],
-        "snn":[1,3],
-    },
-    "3":{
-        "nn":[9,8],
-        "snn":[2,5]
-    },
-    "4":{
-        "nn":[2,1,6,5],
-        "snn":[10,7],
-    },
-    "5":{
-        "nn":[4,8,10,1],
-        "snn":[3,6],
-    },
-    "6":{
-        "nn":[2,4],
-        "snn":[9,5],
-    },
-    "7":{
-        "nn":[2,9],
-        "snn":[8,4],
-    },
-    "8":{
-        "nn":[9,5,3,10],
-        "snn":[7,1],
-    },
-    "9":{
-        "nn":[7,8,2,3],
-        "snn":[6,10]
-    },
-    "10":{
-        "nn":[8,5],
-        "snn":[9,4]
-    }
+dictionary = {
+    "0":{"nn":[4,3],"snn":[7,1]},
+    "1":{"nn":[8,3,6,5],"snn":[0,2]},
+    "2":{"nn":[7,8],"snn":[1,4]},
+    "3":{"nn":[1,4,0,5],"snn":[9,6]},
+    "4":{"nn":[9,3,0,7],"snn":[2,5]},
+    "5":{"nn":[1,3],"snn":[4,8]},
+    "6":{"nn":[8,1],"snn":[7,3]},
+    "7":{"nn":[2,9,8,4],"snn":[6,0]},
+    "8":{"nn":[2,7,1,6],"snn":[9,5]},
+    "9":{"nn":[7,4],"snn":[8,3]}
 }
+class IntersectionUtils:
+    @staticmethod
+    def intersection_point(line1, line2):
+        (x1, y1), (x2, y2) = line1
+        (x3, y3), (x4, y4) = line2
+        den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
+        if den == 0:
+            return None
+        px = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / den
+        py = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / den
+        return px, py
 
-def option_choices(tur,vulture,crow):
-    index=intersected_list.index(vulture[-1])
-    return dictionary[f"{index+1}"]["nn"],dictionary[f"{index+1}"]["snn"]
-
-def intersection_point(point1, point2):
-    x1, y1 = point1[0]
-    x2, y2 = point1[1]
-    x3, y3 = point2[0]
-    x4, y4 = point2[1]
-    m_line1 = (y2 - y1) / (x2 - x1)
-    b_line1 = y1 - m_line1 * x1
-    m_line2 = (y4 - y3) / (x4 - x3)
-    b_line2 = y3 - m_line2 * x3
-    x_intersection = (b_line2 - b_line1) / (m_line1 - m_line2)
-    y_intersection = m_line1 * x_intersection + b_line1
-    return x_intersection, y_intersection
-
-
-def fill_circle(color,list1,extra=False):
-    if not extra:
-        length=len(list1)
-        tur.fillcolor(color)
-        tur.begin_fill()
-        tur.circle(30)
-        tur.end_fill()
-        tur.penup()
-        tur.goto(list1[-1])
-        tur.pendown()
-        tur.write(length, align="center", font=("Arial", 12, "normal"))
-    if extra:
-        # print(list1[0])
-        tur.penup()
-        tur.goto(intersected_list[list1[0]-1])
-        tur.right(90)
-        tur.fd(30)
-        tur.left(90)
-        tur.pendown()
-        tur.fillcolor(color)
-        tur.begin_fill()
-        tur.circle(30)
-        tur.end_fill()
-        tur.penup()
-        tur.goto(intersected_list[list1[0]-1])
-        tur.pendown()
-        # tur.write(first_index+1, align="center", font=("Arial", 12, "normal"))
-        tur.write(list1[0], align="center", font=("Arial", 12, "normal"))
-
-def draw_circle(tur,list1,vulture,crow,click_count,occupied_array,index1,kill_count,selected,change1=False,change2=False,change3=False,change4=False):
-    # print(click_count[0])
-
-    length=len(list1)
-    tur.penup()
-    tur.goto(list1[-1])
-    tur.right(90)
-    tur.fd(30)
-    tur.left(90)
-    tur.pendown()
-    if change1:
-        print("sfd")
-        if (len(vulture)==2):
-            print("2")
-            first_index=intersected_list.index(vulture[0])
-            fill_circle("#59b4c3",list1)
-            tur.penup()
-            tur.goto(vulture[0])
-            tur.right(90)
-            tur.fd(30)
-            tur.left(90)
-            tur.pendown()
-            tur.fillcolor("#99bc85")
-            tur.begin_fill()
-            tur.circle(30)
-            tur.end_fill()
-            tur.penup()
-            tur.goto(vulture[0])
-            tur.pendown()
-            tur.write(first_index+1, align="center", font=("Arial", 12, "normal"))
-            vulture.pop(0)
-            occupied_array[first_index]=0
-            # option_choices(tur,vulture,crow)
-        elif (len(vulture)==1):
-            print("1")
-            fill_circle("#59b4c3",list1)
-            option_choices(tur,vulture,crow)
-    elif change2:
-        print("sfdd")
-        if click_count[0]>=0:
-            # print("rishabh")
-            fill_circle("#E78895",list1)
-    elif change3:
-        print("sfddd")
-        first_index=intersected_list.index(vulture[0])
-        fill_circle("#59b4c3",list1)
-        tur.penup()
-        tur.goto(vulture[0])
-        tur.right(90)
-        tur.fd(30)
-        tur.left(90)
-        tur.pendown()
-        tur.fillcolor("#99bc85")
-        tur.begin_fill()
-        tur.circle(30)
-        tur.end_fill()
-        tur.penup()
-        tur.goto(vulture[0])
-        tur.pendown()
-        tur.write(first_index+1, align="center", font=("Arial", 12, "normal"))
-        vulture.pop(0)
-        occupied_array[first_index]=0
-        # index=find_desired_index(vulture,crow)
-        # print(index1-1)
-        tur.penup()
-        tur.goto(intersected_list[index1-1])
-        tur.right(90)
-        tur.fd(30)
-        tur.left(90)
-        tur.pendown()
-        tur.fillcolor("#99bc85")
-        tur.begin_fill()
-        tur.circle(30)
-        tur.end_fill()
-        tur.penup()
-        tur.goto(intersected_list[index1-1])
-        tur.pendown()
-        tur.write(index1, align="center", font=("Arial", 12, "normal"))
-    elif change4:
-        # print("sohan")
-        print("sfdddd")
-        a=[]
-        a.append(selected[0])
-        print(a)
-        b=[]
-        b.append(selected[1])
-        print(b)
-        fill_circle("#99bc85",a,True)
-        fill_circle("#E78895",b,True)
-    else:
-        fill_circle("#99bc85",list1)
-    tur.speed(0)
-    tur.hideturtle()
-
-def all_empty(occupied_array,choice,choice1,vulture):
-        # print("imp")
-        # print(choice)e
-    print (choice)
-    for ele in choice:
-        flag=1
-        if occupied_array[ele-1]==2:
-            for ele1 in dictionary[f"{ele}"]["nn"]:
-                print(ele1)
-                if ele1 in choice1:
-                    if occupied_array[ele1-1]==2:
-                        print("sohangupta")
-                        flag=1
-                        # return True
-                    if occupied_array[ele1-1]==0:
-                        print("sohanmaupa")
-                        flag=0
-                        return False
-                        # return False
-    if flag==1:
-        for ele in choice:
-            if occupied_array[ele-1]==0:
-                print("sohan gupta")
-        return True
-    return False
-
-
-
-def in_circle(x,y,tur,flag,vulture,crow,click_count,occupied_array,crows_filled,crows_count,selected,index4):
-        # imp_flag=0
-        for i in range(len(intersected_list)):
-
-            # print(crows_filled[0],flag[0])
-            if ((m.sqrt((x-intersected_list[i][0])**2+(y-intersected_list[i][1])**2))<30.0 and flag[0]==1 and occupied_array[i]==0):
-                # print(i)
-                # print("aaaaa")
-                if len(vulture)==1:
-                    print("aaaaaa")
-                    choice,choice1=option_choices(tur,vulture,crow)# print("skdnmf")
-                    neighbour_choice=dictionary[f"{i+1}"]["nn"]
-                    index3=intersected_list.index(vulture[-1])
-                    another_choice=dictionary[f"{index3+1}"]["nn"]
-                    for ele in neighbour_choice:
-                        for ele1 in another_choice:
-                            if ele==ele1:
-                                to_search=ele
-                    print(choice1)
-                    print(i+1)
-                    if i+1 in choice1:
-                        # print("sohan")
-                        neighbour_choice=dictionary[f"{i+1}"]["nn"]
-                        index3=intersected_list.index(vulture[-1])
-                        another_choice=dictionary[f"{index3+1}"]["nn"]
-                        for ele in neighbour_choice:
-                            for ele1 in another_choice:
-                                if ele==ele1:
-                                    to_search=ele
-                        if occupied_array[to_search-1]==2:
-                            # imp_flag=1
-                            # print("sohnq1")
-                            vulture.append(intersected_list[i])
-                            draw_circle(tur,intersected_list[:(i+1)],vulture,crow,click_count,occupied_array,to_search,kill_count,selected,False,False,True)
-                            flag[0]=0
-                            occupied_array[i]=1
-                            occupied_array[to_search-1]=0
-                            click_count[0]+=1
-                            kill_count[0]+=1
-                            crows_count[0]-=1
-                            if (kill_count[0]>=4):
-                                tur.clear()
-                                tur.write("Vulture Wins",font=("Arial",36,"italic"))
-                            return True
-                    elif (i+1) in choice and occupied_array[i]==0 and all_empty(occupied_array,choice,choice1,vulture):
-                        print("sjdfknfed")
-                        vulture.append(intersected_list[i])
-                        draw_circle(tur,intersected_list[:(i+1)],vulture,crow,click_count,occupied_array,0,kill_count,selected,True,False)
-                        flag[0]=0
-                        occupied_array[i]=1
-                        occupied_array[to_search-1]=0
-                        click_count[0]+=1
-                        return True
-                else:
-                    # print("govind")
-                    vulture.append(intersected_list[i])
-                    draw_circle(tur,intersected_list[:(i+1)],vulture,crow,click_count,occupied_array,0,kill_count,selected,True,False)
-                    flag[0]=0
-                    occupied_array[i]=1
-                    click_count[0]+=1
-                    return True
-            if ((m.sqrt((x-intersected_list[i][0])**2+(y-intersected_list[i][1])**2))<30.0 and flag[0]==0 and occupied_array[i]==0 and len(crow)<=crows_count[0]):
-                crow.append(intersected_list[i])
-                draw_circle(tur,intersected_list[:(i+1)],vulture,crow,click_count,occupied_array,0,kill_count,selected,False,True)
-                flag[0]=1
-                click_count[0]+=1
-                occupied_array[i]=2  
-                if crows_count[0]==len(crow):
-                    crows_filled[0]=1
-                return True
-        
-            if (m.sqrt((x-intersected_list[i][0])**2+(y-intersected_list[i][1])**2)<30.0 and flag[0]==0 and crows_filled[0]==1):
-                # flag1=0
-                if (occupied_array[i]==2) and len(selected)==0:
-                    selected.append(i+1)
-                    index4.append(crow.index(intersected_list[i]))
-                if len(selected)==1 and occupied_array[i]==0:
-                    # flag1+=1
-                    selected.append(i+1)
-                if len(selected)==2:
-                    print("draw")
-                    choice=dictionary[f"{selected[0]}"]["nn"]
-                    if selected in choice:
-                        draw_circle(tur,intersected_list[:(i+1)],vulture,crow,click_count,occupied_array,0,kill_count,selected,False,False,False,True)
-                    # flag1=0
-                        print(index4)
-                        crow[index4[0]]=intersected_list[selected[1]-1]
-                        selected=[]
-                        index4=[]
-                        flag[0]=1
-                    else:
-                        selected=[]
-                        index4=[]
-                        print("Not current moment")
-
-def win_crow(vulture,crow):
-    if (len(vulture)>0 and len(crow)>0):
-        index1=intersected_list.index(vulture[-1])
-        choice1,choice2=dictionary[f"{index1+1}"]["nn"],dictionary[f"{index1+1}"]["snn"]
-        flag=0
-        for ele in choice1:
-            if(occupied_array[ele-1]!=2):
-                flag=1
-        for ele1 in choice2:
-            if (occupied_array[ele1-1]!=2):
-                flag=1
-        if (flag==0):
-            return True
-        else:
-            return False
-    else:
-        return False
-def on_screen_click(x,y):
-    if (in_circle(x,y,tur,flag,vulture,crow,click_count,occupied_array,crows_filled,crows_count,selected,index4)):
-        pass
-    if (win_crow(vulture,crow)):
-        tur.clear()
-        tur.write("Crow Wins",font=("Arial",36,"italic"))
-    else:
-        pass
-
-
-# 1 ante vulture 
-# 2 ante crow
-class star:
+class Gameboard:
     def __init__(self):
-        self.screen=turtle.getscreen()
-# screen.tracer(0)
+        self.screen = turtle.getscreen()
         self.screen.bgcolor("#e1f0da")
-        turtle.penup()
-        turtle.goto(-50,+340)
-        turtle.pendown()
-        turtle.write("The Kaooa Game",font=("Arial",20,"bold"))
-        turtle.hideturtle()
-        self.tur=turtle.Turtle()
-        self.tur.penup()
-        self.tur.goto(-180,100)
-        self.list1_points=[]
-        self.list1_points.append((-180,100))
-        # draw_circle(list1_points)
-        self.tur.pendown()
-        self.tur.speed(0)
+        self.turtle = turtle.Turtle()
+        self.turtle.hideturtle()
+        self.occupied_array = [0] * 10
+        self.intersected_list = []
+        self.initialize_game()
+
+    def initialize_game(self):
+        self.set_up_board()
+        self.draw_star()
+        self.draw_circle()
+
+    def set_up_board(self):
+        self.turtle.penup()
+        self.turtle.goto(-50, 340)
+        self.turtle.pendown()
+        self.turtle.write("The Kaooa Game", font=("Arial", 20, "bold"))
+        self.turtle.penup()
+        self.turtle.goto(-180, 100)
+        self.turtle.pendown()
+        self.turtle.speed(0)
+
     def draw_star(self):
-        self.tur.width(3)
-        self.tur.pencolor("#123728")
-        self.tur.fd(450)
-        self.list1_points.append(self.tur.position())
-        self.tur.left(36)
-        self.tur.bk(450)
-        self.list1_points.append(self.tur.position())
-        self.tur.left(36)
-        self.tur.fd(450)
-        self.list1_points.append(self.tur.position())
-        self.tur.left(36)
-        self.tur.bk(450)
-        self.list1_points.append(self.tur.position())
-        self.tur.left(36)
-        self.tur.fd(450)
-        return self.tur,self.list1_points
-flag=[0]
-selected=[]
-click_count=[0]
-kill_count=[0]
-crows_filled=[0]
-crows_count=[7]
-index4=[]
-occupied_array=[0,0,0,0,0,0,0,0,0,0]
+        self.turtle.width(3)
+        self.turtle.pencolor("#123728")
+        list1_points = []
+        self.turtle.fd(450)
+        for i in range(5):
+            if i % 2 == 0:
+                list1_points.append(self.turtle.position())
+                self.turtle.left(36)
+                self.turtle.bk(450)
+            else:
+                list1_points.append(self.turtle.position())
+                self.turtle.left(36)
+                self.turtle.fd(450)
+        self.list1_list = [(list1_points[i - 1], list1_points[i]) for i in range(1, len(list1_points))]
+        self.list1_list.append((list1_points[-1], list1_points[0]))
+        self.calculate_intersections(self.list1_list)
 
-obj=star()
-tur,list1_points=obj.draw_star()
-# screen.update()
-list1_list=[]
-for i in range(1,len(list1_points)):
-        list1_list.append([list1_points[i-1],list1_points[i]])
+    def calculate_intersections(self, lines):
+        for j in range(len(lines)):
+            for k in range(j):
+                    intersection = IntersectionUtils.intersection_point(lines[j], lines[k])
+                    if intersection:
+                        self.intersected_list.append(intersection)
 
-list1_list.append((list1_points[-1],list1_points[0]))
+    def fill_circle(self, color, intersection,num):
+        # print(color)
+        # print(intersection)
+        # print(num)
+        self.turtle.penup()
+        self.turtle.goto(intersection)
+        self.turtle.setheading(270) 
+        self.turtle.forward(30)  
+        self.turtle.setheading(0)  
+        self.turtle.pendown()
+        self.turtle.fillcolor(color)
+        self.turtle.write(num,align="center",font=("Arial",12,"normal"))
+        self.turtle.begin_fill()
+        self.turtle.circle(30) 
+        self.turtle.end_fill()
+        self.turtle.penup()
+        self.turtle.goto(intersection[0], intersection[1] - 10)
+        self.turtle.setheading(0)
+        self.turtle.pendown()
+        self.turtle.write(num, align="center", font=("Arial", 12, "normal"))
+    def draw_circle(self):
+        for i in range(len(self.intersected_list)):
+            self.fill_circle("#99bc85", self.intersected_list[i],i)
+        self.turtle.speed(0)
+        self.turtle.hideturtle()
 
-intersected_list=[]
-for j in range(5):
-    for k in range(j):
-        intersected_list.append((intersection_point(list1_list[j],list1_list[k])))
+class Player:
+    def __init__(self, name, color, occupied_array, intersected_list):
+        self.name = name
+        self.color = color
+        self.positions = []
+        self.index=[]
+        self.occupied_array = occupied_array
+        self.intersected_list = intersected_list
+    def make_move(self, index):
+        print(len(self.positions),self.name)
+        if len(self.positions)==1 and self.name=="vulture": 
+            # print(1)
+            self.occupied_array[index]=1
+            print("sab")
+            return True
+        elif self.occupied_array[index] == 0:
+            self.occupied_array[index] = 1 if self.name == "vulture" else 2
+            self.positions.append(self.intersected_list[index])
+            self.index.append(index)
+            return True
+        return False
+    def draw_move(self, i,color=False):
+        turtle.hideturtle()
+        turtle.penup()
+        turtle.goto(self.intersected_list[i])
+        turtle.pendown()
+        if color:
+            turtle.dot(60,color)
+        else:
+            turtle.dot(60,self.color)
+        turtle.penup()
+        turtle.goto(self.intersected_list[i])
+        turtle.setheading(270)  
+        turtle.forward(10)  
+        turtle.setheading(0)  
+        turtle.pendown()
+        turtle.write(i, align="center", font=("Arial", 12, "normal"))
 
+class KaooaGame:
+    def __init__(self):
+        self.board = Gameboard()
+        self.vulture = Player("vulture", "#59b4c3", self.board.occupied_array, self.board.intersected_list)
+        self.crow = Player("crow", "#E78895", self.board.occupied_array, self.board.intersected_list)
+        self.current_player = self.vulture
+        self.kill_count=0
+        turtle.onscreenclick(self.on_screen_click)
+    def start_game(self):
+        turtle.mainloop()
+    def on_screen_click(self, x, y):
+        if self.in_circle(x, y):
+            if self.win_crow():
+                turtle.clearscreen()
+                turtle.write(f"{self.current_player.name.capitalize()} Wins", align="center",font=("Arial", 36, "italic"))
+                turtle.hideturtle()
+            else:
+                self.switch_turns()
+    def in_index(self,value):
+        for i in range(len(self.board.intersected_list)):
+            if (self.board.intersected_list[i]==value):
+                return i
+        return -1
+    def in_circle(self, x, y):
+        for i, point in enumerate(self.board.intersected_list):
+            if m.sqrt((x - point[0]) ** 2 + (y - point[1]) ** 2) < 30.0:
+                # print(self.current_player.name)
+                # print(self.current_player.positions)
+                # print(self.current_player.make_move(i))
+                if self.current_player.name=="vulture"  and self.current_player.make_move(i) and len(self.current_player.positions)==1:
+                    # print('sabe')
+                    fni=dictionary[str(self.current_player.index[-1])]["nn"]
+                    sni=dictionary[str(self.current_player.index[-1])]["snn"]
+                    self.board.occupied_array[self.current_player.index[-1]]=0
+                    self.current_player.draw_move(self.current_player.index[-1],"#99bc85")
+                    self.current_player.index.pop(-1)
+                    self.current_player.index.append(i)
+                    self.current_player.positions.pop(-1)
+                    self.current_player.positions.append(self.board.intersected_list[i])
+                    if i in sni:
+                        for j in range(len(fni)):
+                            if self.board.occupied_array[fni[j]]==2:
+                                self.board.occupied_array[fni[j]]=0
+                                self.current_player.draw_move(fni[j],"#99bc85")
+                                ind=self.in_index(self.board.intersected_list[fni[j]])
+                                print(ind)
+                                value=self.board.intersected_list[ind]
+                                self.crow.positions.remove(value)
+                                self.crow.index.remove(ind)
+                                self.current_player.draw_move(i)
+                                self.kill_count+=1
+                                return True
+                    else:
+                        # print("sa")
+                        self.current_player.draw_move(i)
+                        return True
+                elif self.current_player.make_move(i):
+                    self.current_player.draw_move(i)
+                    return True
+        return False
+    def win_crow(self):
+        if len(self.vulture.positions) > 0 and len(self.crow.positions) > 0:
+            index1 = self.board.intersected_list.index(self.vulture.positions[-1])
+            choice1, choice2 = dictionary[f"{index1}"]["nn"], dictionary[f"{index1}"]["snn"]
+            if all(self.board.occupied_array[ele - 1] == 2 for ele in choice1) and \
+               all(self.board.occupied_array[ele - 1] == 2 for ele in choice2):
+                return True
+        if self.kill_count==4:
+            return True
+        return False
 
-# print(intersected_list)
-vulture=[]
-crow=[]
-for i in range(1,len(intersected_list)+1):
-    tur.speed(0)
-    draw_circle(tur,intersected_list[:i],vulture,crow,click_count,occupied_array,0,kill_count,selected)
+    def switch_turns(self):
+        self.current_player = self.crow if self.current_player == self.vulture else self.vulture
 
-turtle.onscreenclick(on_screen_click)
-turtle.mainloop()
-# turtle.done()
+game = KaooaGame()
+game.start_game()
